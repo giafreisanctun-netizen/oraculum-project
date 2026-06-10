@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1780977540959,
+      "tag": "0000_lowly_rachel_grey",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1780977876008,
+      "tag": "0001_ancient_vulture",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1780981612346,
+      "tag": "0002_useful_brother_voodoo",
+      "breakpoints": true
+    }
+  ]
+}
