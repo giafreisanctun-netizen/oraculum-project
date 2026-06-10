@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "rewrites": [
+    {
+      "source": "/api/auth/(.*)",
+      "destination": "/api/main.js"
+    },
+    {
+      "source": "/api/trpc/(.*)",
+      "destination": "/api/main.js"
+    }
+  ]
+}
