@@ -9,7 +9,6 @@ import { authenticateUser } from "../_core/auth";
 export function registerLoginRoutes(app: Express) {
   /**
    * POST /api/auth/login
-   * Authenticate user with username and password
    */
   app.post("/api/auth/login", async (req: Request, res: Response) => {
     try {
@@ -21,7 +20,6 @@ export function registerLoginRoutes(app: Express) {
         });
       }
 
-      // Authenticate user
       const user = await authenticateUser(username, password);
 
       if (!user) {
@@ -30,28 +28,26 @@ export function registerLoginRoutes(app: Express) {
         });
       }
 
-      // Store user in session
+      // salva sessão
       (req.session as any).userId = user.id;
       (req.session as any).username = user.username;
       (req.session as any).role = user.role;
 
-      // Save session
-      req.session.save((err) => {
-        if (err) {
-          console.error("[Auth] Session save error:", err);
-          return res.status(500).json({
-            error: "Session error",
-          });
-        }
-
-        // Return user (already doesn't have passwordHash from auth module)
-        return res.status(200).json({
-          success: true,
-          user,
+      // garante que a sessão foi salva antes de responder
+      await new Promise<void>((resolve, reject) => {
+        req.session.save((err) => {
+          if (err) return reject(err);
+          resolve();
         });
+      });
+
+      return res.status(200).json({
+        success: true,
+        user,
       });
     } catch (error) {
       console.error("[Auth] Login error:", error);
+
       return res.status(500).json({
         error: "Internal server error",
       });
@@ -60,7 +56,6 @@ export function registerLoginRoutes(app: Express) {
 
   /**
    * POST /api/auth/logout
-   * Clear session
    */
   app.post("/api/auth/logout", (req: Request, res: Response) => {
     req.session.destroy((err) => {
@@ -72,6 +67,7 @@ export function registerLoginRoutes(app: Express) {
       }
 
       res.clearCookie("app_session_id");
+
       return res.status(200).json({
         success: true,
       });
@@ -80,7 +76,6 @@ export function registerLoginRoutes(app: Express) {
 
   /**
    * GET /api/auth/me
-   * Get current user from session
    */
   app.get("/api/auth/me", (req: Request, res: Response) => {
     const userId = (req.session as any)?.userId;
