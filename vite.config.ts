@@ -4,12 +4,9 @@ import path from "node:path";
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  root: path.resolve("client"),
+  root: "client",
 
-  plugins: [
-    react(),
-    tailwindcss(),
-  ],
+  plugins: [react(), tailwindcss()],
 
   resolve: {
     alias: {
@@ -19,12 +16,8 @@ export default defineConfig({
     },
   },
 
-  envDir: path.resolve("."),
-
-  publicDir: path.resolve("client/public"),
-
   build: {
-    outDir: path.resolve("dist/public"),
+    outDir: "../dist",
     emptyOutDir: true,
   },
 });
