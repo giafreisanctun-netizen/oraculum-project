@@ -1,5 +1,11 @@
-import { int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
-
+import {
+  pgTable,
+  pgEnum,
+  serial,
+  text,
+  timestamp,
+  varchar,
+} from "drizzle-orm/pg-core";
 
 
 /**
@@ -12,7 +18,9 @@ import { int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-or
 
  */
 
-export const users = mysqlTable("users", {
+const roleEnum = pgEnum("role", ["user", "admin"]);
+
+export const users = pgTable("users", {
   
   /**
   
@@ -22,7 +30,7 @@ export const users = mysqlTable("users", {
    
    */
   
-  id: int("id").autoincrement().primaryKey(),
+  id: serial("id").primaryKey(),
   
 
   
@@ -44,7 +52,7 @@ export const users = mysqlTable("users", {
   
 
   
-  role: mysqlEnum("role", ["user", "admin"]).default("user").notNull(),
+  role: roleEnum().default("user").notNull(),
   
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   
@@ -72,9 +80,9 @@ export type InsertUser = typeof users.$inferInsert;
  
  */
 
-export const posts = mysqlTable("posts", {
+export const posts = pgTable("posts", {
   
-  id: int("id").autoincrement().primaryKey(),
+  id: serial("id").primaryKey(),
   
   content: text("content").notNull(), // Full text content
   
