@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
@@ -11,11 +12,11 @@ import TextPage from "./pages/TextPage";
 import LocalLogin from "./pages/LocalLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 
-function Router() {
+function Router({ user, setUser }: any) {
   // make sure to consider if you need authentication for certain routes
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
-      <Header />
+      <Header user={user} setUser={setUser} />
       <main className="flex-1">
         <Switch>
           <Route path="/" component={Home} />
@@ -38,6 +39,41 @@ function Router() {
 // - If you want to make theme switchable, pass `switchable` ThemeProvider and use `useTheme` hook
 
 function App() {
+
+  const [user, setUser] = useState<any>(null);
+const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+  async function checkAuth() {
+    try {
+      const res = await fetch("/api/auth/me", {
+        credentials: "include",
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setUser(data.user);
+      } else {
+        setUser(null);
+      }
+    } catch (err) {
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  checkAuth();
+}, []);
+
+  if (loading) {
+  return (
+    <div className="flex items-center justify-center min-h-screen">
+      Carregando...
+    </div>
+  );
+  }
+  
   return (
     <ErrorBoundary>
       <ThemeProvider
@@ -46,7 +82,7 @@ function App() {
       >
         <TooltipProvider>
           <Toaster />
-          <Router />
+          <Router user={user} setUser={setUser} />
         </TooltipProvider>
       </ThemeProvider>
     </ErrorBoundary>
