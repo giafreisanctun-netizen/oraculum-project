@@ -79,7 +79,7 @@
     "zod": "^4.1.12",
     "bcryptjs": "^3.0.3",
     "connect-mongo": "^6.0.0",
-    "express-session": "^1.19.0",
+    "express-session": "^1.19.0"
   },
   "devDependencies": {
     "@builder.io/vite-plugin-jsx-loc": "^0.1.1",
