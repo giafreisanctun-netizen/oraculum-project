@@ -71,7 +71,7 @@ export function registerLoginRoutes(app: Express) {
         });
       }
 
-      res.clearCookie("oraculum.sid");
+      res.clearCookie("app_session_id");
       return res.status(200).json({
         success: true,
       });

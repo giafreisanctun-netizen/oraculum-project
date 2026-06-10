@@ -24,6 +24,6 @@ export function getSessionConfig(): session.SessionOptions {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       path: "/",
     },
-    name: "oraculum.sid", // Custom session cookie name
+    name: "app_session_id", // Custom session cookie name
   };
 }

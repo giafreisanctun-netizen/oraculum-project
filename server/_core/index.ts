@@ -5,7 +5,7 @@ import net from "net";
 import session from "express-session";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 // OAuth removed - using local authentication instead
-import { registerStorageProxy } from "./storageProxy";
+// Storage proxy removed
 import { registerLoginRoutes } from "./loginRoutes";
 import { getSessionConfig } from "./session";
 import { appRouter } from "../routers";
@@ -41,7 +41,7 @@ async function startServer() {
   // Session middleware
   app.use(session(getSessionConfig()));
   
-  registerStorageProxy(app);
+  // registerStorageProxy(app);
   registerLoginRoutes(app);
   // OAuth routes removed - using local authentication instead
   // tRPC API
