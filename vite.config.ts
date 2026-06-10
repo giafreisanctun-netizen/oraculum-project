@@ -25,6 +25,4 @@ export default defineConfig({
     outDir: path.resolve("dist/public"),
     emptyOutDir: true,
   },
-});    },
-  },
 });
