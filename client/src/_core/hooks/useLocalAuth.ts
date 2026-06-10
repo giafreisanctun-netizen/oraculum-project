@@ -30,7 +30,9 @@ export function useLocalAuth(): UseLocalAuthReturn {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Check auth session
+  // =========================
+  // CHECK AUTH SESSION
+  // =========================
   useEffect(() => {
     const checkAuth = async () => {
       try {
@@ -46,7 +48,7 @@ export function useLocalAuth(): UseLocalAuthReturn {
             setUser(data.user);
           }
         } catch {
-          // ignore parse errors
+          // backend não retornou JSON válido
         }
       } catch (err) {
         console.error("[Auth] Check auth error:", err);
@@ -58,48 +60,51 @@ export function useLocalAuth(): UseLocalAuthReturn {
     checkAuth();
   }, []);
 
-  const login = useCallback(
-    async (username: string, password: string) => {
-      setLoading(true);
-      setError(null);
+  // =========================
+  // LOGIN
+  // =========================
+  const login = useCallback(async (username: string, password: string) => {
+    setLoading(true);
+    setError(null);
 
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ username, password }),
+      });
+
+      const text = await response.text();
+
+      let data: any;
       try {
-        const response = await fetch("/api/auth/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify({ username, password }),
-        });
-
-        const text = await response.text();
-
-        let data: any;
-        try {
-          data = JSON.parse(text);
-        } catch {
-          throw new Error(text); // mostra erro real do backend
-        }
-
-        if (!response.ok) {
-          throw new Error(data?.error || "Login failed");
-        }
-
-        setUser(data.user);
-      } catch (err) {
-        const message =
-          err instanceof Error ? err.message : "Login error";
-
-        setError(message);
-        throw err;
-      } finally {
-        setLoading(false);
+        data = JSON.parse(text);
+      } catch {
+        throw new Error(text); // mostra erro real do backend
       }
-    },
-    []
-  );
 
+      if (!response.ok) {
+        throw new Error(data?.error || "Login failed");
+      }
+
+      setUser(data.user);
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Login error";
+
+      setError(message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // =========================
+  // LOGOUT
+  // =========================
   const logout = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -115,7 +120,7 @@ export function useLocalAuth(): UseLocalAuthReturn {
       try {
         JSON.parse(text);
       } catch {
-        // ignore logout parse errors
+        // ignore
       }
 
       if (!response.ok) {
@@ -127,91 +132,6 @@ export function useLocalAuth(): UseLocalAuthReturn {
       const message =
         err instanceof Error ? err.message : "Logout error";
 
-      setError(message);
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  return {
-    user,
-    loading,
-    error,
-    isAuthenticated: !!user,
-    login,
-    logout,
-  };
-}        const response = await fetch("/api/auth/me", {
-          credentials: "include",
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          if (data.user) {
-            setUser(data.user);
-          }
-        }
-      } catch (err) {
-        console.error("[Auth] Check auth error:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkAuth();
-  }, []);
-
-  const login = useCallback(
-    async (username: string, password: string) => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const response = await fetch("/api/auth/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify({ username, password }),
-        });
-
-        if (!response.ok) {
-          const data = await response.json();
-          throw new Error(data.error || "Login failed");
-        }
-
-        const data = await response.json();
-        setUser(data.user);
-      } catch (err) {
-        const message = err instanceof Error ? err.message : "Login error";
-        setError(message);
-        throw err;
-      } finally {
-        setLoading(false);
-      }
-    },
-    []
-  );
-
-  const logout = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetch("/api/auth/logout", {
-        method: "POST",
-        credentials: "include",
-      });
-
-      if (!response.ok) {
-        throw new Error("Logout failed");
-      }
-
-      setUser(null);
-    } catch (err) {
-      const message = err instanceof Error ? err.message : "Logout error";
       setError(message);
       throw err;
     } finally {
