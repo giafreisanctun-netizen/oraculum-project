@@ -3,16 +3,7 @@ import react from "@vitejs/plugin-react";
 import path from "node:path";
 import { defineConfig } from "vite";
 
-/*
-  ❌ REMOVIDO:
-  import { jsxLocPlugin } from "@builder.io/vite-plugin-jsx-loc";
-  
-  Esse plugin não existe mais no projeto e estava quebrando o build no Vercel.
-*/
-
 export default defineConfig({
-  // ❌ REMOVIDO: jsxLocPlugin()
-  // Antes era: plugins = [react(), tailwindcss(), jsxLocPlugin()]
   plugins: [
     react(),
     tailwindcss()
@@ -39,14 +30,10 @@ export default defineConfig({
 
   server: {
     host: true,
-    allowedHosts: [
-      "localhost",
-      "127.0.0.1",
-    ],
+    allowedHosts: ["localhost", "127.0.0.1"],
     fs: {
       strict: true,
       deny: ["**/.*"],
     },
   },
-});  },
 });
